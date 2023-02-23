@@ -135,7 +135,7 @@ calico_cni_images:
 metallb_images:
 # Enter the list of all docker images for metallb upgrade to be pushed to local registry. Use the correct format only. Refer to the variable file.
 
-
+~~~
 
 Vault
 ----------------------------------------------------------------------------
