@@ -148,6 +148,8 @@ To edit the file:
 
 
 Execute the playbook
+-----------------------------------------------------------------------------
+
 	~~~
 	ansible-playbook upgrade-k8s-cluster.yml -i inventory/<cluster_name> -e "@vault/secrets.yml" --ask-vault-pass
 	password: <provide the vault password here>
