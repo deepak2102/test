@@ -14,16 +14,17 @@ Roles:
 	- If any of the package is missing in the local apt repository, the playbook is interrupted generating a file containing missing package name.
 - Update image registry
 	- This role is optional.
-	- If set to TRUE, this role will install docker on management_server and tag & push the docker image to local-registry
+	- If set to TRUE, this role will install docker on management_server(db_server in case of OCD/LRF-RDF and tag & push the docker image to local-registry
 	- If set to FALSE, the execution of all the tasks in this role will be skipped.
 - Upgrade Container Runtime
-	
+	- This role upgrades the existing container runtime, either docker or containerd (depends on selecyion in variable file)
+	- This role can also migrate container runtime from docker to containerd if migrate_to_containerd is set to true.	
 - Upgrade Kubeadm Cluster
-	- This role sets up High Availabilty cluster.
-	- This role can also be used to set up single-master K8s-cluster.
+	- This role upgrades the kubeadm cluster from current version 1.18 to 1.23
+	- This role also sense the current version of the cluster and applies the upgrade from current to 1.23
 - Upgrade Cluster Components
-	- This role installs the optional cluster components such as metallb, nginx-ingress.
-	- If set to FALSE in variable file, the exectuion of the task will be skipped
+	- This role upgardes the cluster component metallb if upgrade_metallb is set to true
+	- This role upgardes the cluster component calico if upgrade_calico is set to true
 
 	
 
@@ -33,36 +34,34 @@ The inventory will differ for each cluster.
 The inventory file is located in the inventory/<cluster_name> directory with the name "hosts".
 ~~~
 Example:
-	For GDA-PTH01, the inventory file is located at inventory/GDAPH01/hosts
+	For OCD-PTH01, the inventory file is located at inventory/ocdph01/hosts
 
 ~~~
-For GDA in PTH01 the inventory hosts file contains following entries for servers.
+For OCD in PTH01 the inventory hosts file contains following entries for servers.
 
 ~~~
+[kubernetes:children]
+kube_worker
+kube_master
+
 [kube_worker]
-KW01
-KW02
-KW03
-KW04
+OCDPH01-W01
+OCDPH01-W02
 
-[kube_master_main]
-KM01
-
-[kube_master_backup]
-KM02
-KM03
-
-[deploy_server]
-MG01
+[kube_master]
+OCDPH01-M01
 
 [db_server]
-DB01
-DB02
-DB03
+OCDPH01-DB01
+
+[local_repository]
+OCDPH01-DB01
+
+[local_image_registry]
+OCDPH01-DB01
 
 ** Please note that the nomenclature of the above should not be changed with actual hostname.
 ** The correct IP address should be present in /etc/hosts file for each server.
-** For single master K8s cluster, the kube_master_backup group node should not have any entries.
 
 ~~~
 
